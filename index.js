@@ -5,7 +5,7 @@ const multer = require('multer');
 require('dotenv').config();
 
 app.use(cors());
-app.use(express.static('public'));
+app.use('/public', express.static(process.cwd() + '/public'));
 
 // Store file in memory only (no disk write needed)
 const storage = multer.memoryStorage();
@@ -16,16 +16,12 @@ const upload = multer({ storage });
 // ================================
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(process.cwd() + '/views/index.html');
 });
 
 app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
-  if (!req.file) {
-    return res.json({ error: 'No file uploaded' });
-  }
-
   res.json({
-    filename: req.file.originalname,
+    name: req.file.originalname,
     type: req.file.mimetype,
     size: req.file.size
   });
